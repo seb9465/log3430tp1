@@ -11,13 +11,19 @@ export default describe('Client', () => {
     client = new Sharedbox.Client('api', 1, 'endpoint');
   });
 
+  describe('Constructor', () => {
+    it('Should have initialized the apiToken with the right value', () => {
+      expect(client['apiToken']).to.deep.equal('api');
+    });
+  });
+
   describe('initializeSharedBox function', () => {
     it('Should do nothing', () => {
       expect(true).to.be.true;
     });
 
     it('should be defined', () => {
-      assert(client);      
+      assert(client);
     });
   });
 });
