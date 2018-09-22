@@ -50,17 +50,41 @@ export default describe('Sharedbox', () => {
     it('should be defined', () => {
       assert(sharedbox);
     });
-    it ('Should set all the property of the class correctly with the given sharedbox object', () => {
+    it('Should set all the property of the class correctly with the given sharedbox object', () => {
       expect(sharedbox.guid).to.deep.equal(SHAREDBOX_OBJ.guid);
       expect(sharedbox.userEmail).to.deep.equal(SHAREDBOX_OBJ.userEmail);
       /* TODO : Liste de tous les autres propriétés de la classe. */
     });
-    it ('Should set to null (or default) all the property if no object is passed to the constructor', () => {
+    it('Should set to null (or default) all the property if no object is passed to the constructor', () => {
       sharedbox = new SharedBox.Helpers.Sharedbox();
 
       expect(sharedbox.guid).to.be.null;
     });
   });
 
+  describe('toJson function', () => {
+    it('Should return the json object', () => {
+      const expectedResult = {
+        'sharedbox': {
+          'guid': SHAREDBOX_OBJ.guid,
+          'userEmail': SHAREDBOX_OBJ.userEmail,
+          'uploadUrl': SHAREDBOX_OBJ.uploadUrl,
+          'subject': SHAREDBOX_OBJ.subject,
+          'message': SHAREDBOX_OBJ.message,
+          'recipients': SHAREDBOX_OBJ.recipients,
+          'documentIds': [],
+          'expirationValue': SHAREDBOX_OBJ.securityOptions.expirationValue,
+          'expirationUnit': SHAREDBOX_OBJ.securityOptions.expirationUnit,
+          'retentionPeriodType': SHAREDBOX_OBJ.securityOptions.retentionPeriodType,
+          'retentionPeriodValue': SHAREDBOX_OBJ.securityOptions.retentionPeriodValue,
+          'retentionPeriodUnit': SHAREDBOX_OBJ.securityOptions.retentionPeriodUnit,
+          'notificationLanguage': SHAREDBOX_OBJ.notificationLanguage
+        }
+      };
 
+      let result = JSON.parse(sharedbox.toJson());
+
+      expect(result).to.deep.equal(expectedResult);
+    });
+  });
 });
