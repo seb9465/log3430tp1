@@ -118,13 +118,52 @@ export default describe('JsonClient', () => {
         body: message
       };
 
-      
+
       const result = jsonClient.addRecipient(jsonClient.guid, message).then((stubResolve) => {
         expect(stubResolve).to.deep.equal('The request has been made.');
       });
 
       assert(stub.calledOnceWith(expectedSuffix, expectedRequest));
       expect(result).not.to.be.an('error');
+    });
+    it('Should return the added recipient', () => {
+      const FAKE_RECIPIENT = {
+        'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
+        'firstName': 'John',
+        'lastName': 'Doe',
+        'email': 'john.doe@email.com',
+        'options': {
+          'locked': false,
+          'bouncedEmail': false,
+          'verified': false,
+          'contactMethods': [
+            {
+              'id': 1,
+              'destination': '+55555555555',
+              'destinationType': 'office_phone',
+              'verified': false,
+              'createdAt': '2018-09-01T16:26:07-04:00',
+              'updatedAt': '2018-09-01T16:26:07-04:00'
+            },
+            {
+              'id': 2,
+              'destination': '+1111111111',
+              'destinationType': 'cell_phone',
+              'verified': true,
+              'createdAt': '2018-09-01T16:26:07-04:00',
+              'updatedAt': '2018-09-01T16:26:07-04:00'
+            }
+          ]
+        }
+      };
+      const message = 'Hello world';
+      sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object).callsFake(() => {
+        return FAKE_RECIPIENT;
+      });
+
+      const result = jsonClient.addRecipient(jsonClient.guid, message);
+
+      expect(result).to.deep.equal(FAKE_RECIPIENT);
     });
   });
 
