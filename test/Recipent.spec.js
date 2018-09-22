@@ -50,60 +50,87 @@ export default describe('Recipient', () => {
 
   describe('Constructor', () => {
     describe('Should initialize every properties with the object passed to the constructor', () => {
-      it ('id property', () => {
+      it('id property', () => {
         expect(recipient.id).to.deep.equal(RECIPIENT_OBJ.id);
       });
-      it ('firstName property', () => {
+      it('firstName property', () => {
         expect(recipient.firstName).to.deep.equal(RECIPIENT_OBJ.firstName);
       });
-      it ('lastName property', () => {
+      it('lastName property', () => {
         expect(recipient.lastName).to.deep.equal(RECIPIENT_OBJ.lastName);
       });
-      it ('email property', () => {
+      it('email property', () => {
         expect(recipient.email).to.deep.equal(RECIPIENT_OBJ.email);
       });
-      it ('locked option property', () => {
+      it('locked option property', () => {
         expect(recipient.options.locked).to.deep.equal(RECIPIENT_OBJ.options.locked);
       });
-      it ('bouncedEmail option property', () => {
+      it('bouncedEmail option property', () => {
         expect(recipient.options.bouncedEmail).to.deep.equal(RECIPIENT_OBJ.options.bouncedEmail);
       });
-      it ('verified option property', () => {
+      it('verified option property', () => {
         expect(recipient.options.verified).to.deep.equal(RECIPIENT_OBJ.options.verified);
       });
-      it ('contactMethod option property', () => {
+      it('contactMethod option property', () => {
         expect(recipient.options.contactMethods).to.be.an('array').that.is.not.empty;
       });
     });
+
     describe('Should initialize with null or default value when no object is given to the constructor', () => {
       beforeEach(() => {
         recipient = new SharedBox.Helpers.Recipient();
       });
 
-      it ('id property', () => {
+      it('id property', () => {
         expect(recipient.id).to.be.null;
       });
-      it ('firstName property', () => {
+      it('firstName property', () => {
         expect(recipient.firstName).to.be.null;
       });
-      it ('lastName property', () => {
+      it('lastName property', () => {
         expect(recipient.lastName).to.be.null;
       });
-      it ('email property', () => {
+      it('email property', () => {
         expect(recipient.email).to.be.null;
       });
-      it ('locked option property', () => {
+      it('locked option property', () => {
         expect(recipient.options.locked).to.be.null;
       });
-      it ('bouncedEmail option property', () => {
+      it('bouncedEmail option property', () => {
         expect(recipient.options.bouncedEmail).to.be.null;
       });
-      it ('verified option property', () => {
+      it('verified option property', () => {
         expect(recipient.options.verified).to.be.null;
       });
-      it ('contactMethod option property', () => {
+      it('contactMethod option property', () => {
         expect(recipient.options.contactMethods).to.be.an('array').that.is.empty;
       });
+    });
+  });
+
+  describe('toJson function', () => {
+    it('Should return the json object', () => {
+      const expectedResult = {
+        'recipient': {
+          'email': 'john.doe@email.com',
+          'firstName': 'John',
+          'lastName': 'Doe',
+          'contactMethods': [
+            {
+              'destinationType': 'office_phone',
+              'destination': '+55555555555'
+            },
+            {
+              'destinationType': 'cell_phone',
+              'destination': '+1111111111'
+            }
+          ]
+        }
+      };
+
+      let result = JSON.parse(recipient.toJson());
+
+      expect(result).to.deep.equal(expectedResult);
     });
   });
 });
