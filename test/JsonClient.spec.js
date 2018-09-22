@@ -105,15 +105,9 @@ export default describe('JsonClient', () => {
 
   describe('addRecipient function', () => {
     it('Should call the _makeRequest function with two parameters', () => {
-      let stub = sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object).callsFake(() => {
-        return {
-        };
-      });
+      let stub = sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object);
       stub.resolves('The request has been made.');
-
       const message = 'hello world';
-      const result = jsonClient.addRecipient(jsonClient.guid, message);
-
       const expectedSuffix = `api/sharedboxes/${jsonClient.guid}/recipients`;
       const expectedRequest = {
         headers: {
@@ -123,6 +117,12 @@ export default describe('JsonClient', () => {
         method: 'post',
         body: message
       };
+
+      
+      const result = jsonClient.addRecipient(jsonClient.guid, message).then((stubResolve) => {
+        expect(stubResolve).to.deep.equal('The request has been made.');
+      });
+
       assert(stub.calledOnceWith(expectedSuffix, expectedRequest));
       expect(result).not.to.be.an('error');
     });
