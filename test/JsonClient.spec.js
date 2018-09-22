@@ -5,7 +5,7 @@ import sinon from 'sinon';
 let expect = chai.expect;
 let assert = chai.assert;
 
-export default describe ('JsonClient', () => {
+export default describe('JsonClient', () => {
   let jsonClient;
   // let stub;
   // let setStub = 
@@ -15,31 +15,31 @@ export default describe ('JsonClient', () => {
 
   });
 
-  it ('Should do nothing', () => {
+  it('Should do nothing', () => {
     expect(true).to.be.true;
   });
 
-  it ('Should be defined', () => {
+  it('Should be defined', () => {
     assert(jsonClient);
   });
 
   describe('Constructor', () => {
-    it ('Should have initialized apiToken property with the good value', () => {
+    it('Should have initialized apiToken property with the good value', () => {
       expect(jsonClient['apiToken']).to.deep.equal('api');
     });
-    it ('Should have initialized userId property with the good value', () => {
+    it('Should have initialized userId property with the good value', () => {
       expect(jsonClient['userId']).to.deep.equal(1);
     });
-    it ('Should have initialized endpoint property with the good value', () => {
+    it('Should have initialized endpoint property with the good value', () => {
       expect(jsonClient['endpoint']).to.deep.equal('endpoint');
     });
-    it ('Should have initialized noCaching property with the good value', () => {
+    it('Should have initialized noCaching property with the good value', () => {
       expect(jsonClient['noCaching']).to.be.false;
     });
   });
 
-  describe ('initializeSharedbox function', () => {
-    it ('Should call the _makeRequest function with one parameter', () => {
+  describe('initializeSharedbox function', () => {
+    it('Should call the _makeRequest function with one parameter', () => {
       let makeRequestStub = sinon.stub(jsonClient, '_makeRequest').callsFake((userEmail) => {
         return userEmail;
       });
@@ -54,15 +54,60 @@ export default describe ('JsonClient', () => {
     });
   });
 
-  describe ('submitSharedbox function', () => {
+  describe('submitSharedbox function', () => {
+    const SHAREDBOX = {
+      'userEmail': 'user@acme.com',
+      'guid': '1c820789a50747df8746aa5d71922a3f',
+      'uploadUrl': 'upload_url',
+      'recipients': [/* list of Recipient objects*/],
+      'attachments': [/*list of Attachment objects*/],
+      'message': 'lorem ipsum...',
+      'subject': 'Donec rutrum congue leo eget malesuada.',
+      'notificationLanguage': 'en',
+      'securityOptions': {
+        'allowRememberMe': true,
+        'allowSms': true,
+        'allowVoice': true,
+        'allowEmail': true,
+        'expirationValue': 5,
+        'expirationUnit': 'days',
+        'retentionPeriodType': 'do_not_discard',
+        'retentionPeriodValue': null,
+        'retentionPeriodUnit': 'hours',
+        'allowManualClose': true
+      },
+      'userId': 1,
+      'status': 'in_progress',
+      'previewUrl': 'http://sharedbox.com/sharedboxes/dhjewg67ewtfg476/preview',
+      'createdAt': '2018-05-24T14:45:35.062Z',
+      'updatedAt': '2018-05-24T14:45:35.589Z',
+      'expiration': '2018-05-31T14:45:35.038Z',
+      'closedAt': null
+    };
+    it('Should call the _makeRequest function with 2 parameters', () => {
+      let makeResquestStub = sinon.stub(jsonClient, '_makeRequest').callsFake(() => {
+        return SHAREDBOX;
+      });
+
+      let result = jsonClient.submitSharedBox(SHAREDBOX);
+
+      expect(result).to.deep.equal(SHAREDBOX);
+      assert(makeResquestStub.calledOnceWith('api/sharedboxes', {
+        headers: {
+          'Authorization-Token': jsonClient.apiToken,
+          'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: SHAREDBOX
+      }));
+    });
+  });
+
+  describe('addRecipient function', () => {
 
   });
 
-  describe ('addRecipient function', () => {
-
-  });
-
-  describe ('closeSharedbox function', () => {
+  describe('closeSharedbox function', () => {
 
   });
 });
