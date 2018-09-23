@@ -170,6 +170,42 @@ export default describe('JsonClient', () => {
   });
 
   describe('closeSharedbox function', () => {
+    it ('Should call the _makeRequest function with two parameters', () => {
+      const expectedSuffix = 'api/sharedboxes/dc6f21e0f02c41123b795e4/close';
+      const expectedRequest = {
+        headers: {
+          'Authorization-Token': jsonClient.apiToken,
+          'Content-Type': 'application/json'
+        },
+        method: 'patch'
+      };
+      let stub = sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object);
 
+      jsonClient.closeSharedbox('dc6f21e0f02c41123b795e4');
+
+      sinon.assert.calledWith(stub, expectedSuffix, expectedRequest);
+    });
+
+    it ('Should return a json saying every worked', () => {
+      const expectedResult = {
+        'result': true,
+        'message': 'Sharedbox successfully closed.' 
+      };
+      sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object)
+        .callsFake(() => {
+          return {
+            'result': true,
+            'message': 'Sharedbox successfully closed.'
+          };
+        });
+      
+      const result = jsonClient.closeSharedbox('dc6f21e0f02c41123b795e4');
+
+      assert(result).to.deep.equal(expectedResult);
+    });
+
+    it ('Should return a json saying it didin\'t close', () => {
+      
+    });
   });
 });
