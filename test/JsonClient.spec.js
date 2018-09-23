@@ -200,8 +200,8 @@ export default describe('JsonClient', () => {
         });
       
       const result = jsonClient.closeSharedbox('dc6f21e0f02c41123b795e4');
-
-      assert(result).to.deep.equal(expectedResult);
+      
+      expect(result).to.deep.equal(expectedResult);
     });
 
     it ('Should return a json saying it didin\'t close', () => {
