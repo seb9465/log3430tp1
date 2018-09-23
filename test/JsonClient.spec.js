@@ -126,7 +126,7 @@ export default describe('JsonClient', () => {
       assert(stub.calledOnceWith(expectedSuffix, expectedRequest));
       expect(result).not.to.be.an('error');
     });
-    it('Should return the added recipient', () => {
+    it ('Should return the added recipient', () => {
       const FAKE_RECIPIENT = {
         'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
         'firstName': 'John',
@@ -164,7 +164,9 @@ export default describe('JsonClient', () => {
       const result = jsonClient.addRecipient(jsonClient.guid, message);
 
       expect(result).to.deep.equal(FAKE_RECIPIENT);
+      assert.isDefined(result);
     });
+
   });
 
   describe('closeSharedbox function', () => {
