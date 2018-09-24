@@ -12,6 +12,10 @@ export default describe('Client', () => {
   });
 
   describe('Constructor', () => {
+    it('should be defined', () => {
+      assert(client);
+    });
+
     it('Should have initialized the apiToken with the right value', () => {
       expect(client['apiToken']).to.deep.equal('api');
     });
@@ -21,15 +25,15 @@ export default describe('Client', () => {
     it('Should have initialized the endpoint with the right value', () => {
       expect(client['endpoint']).to.deep.equal('endpoint');
     });
+    it('Should have initialized the jsonClient', () => {
+      assert.isDefined(client['jsonClient']);
+    });
   });
 
-  describe('initializeSharedBox function', () => {
-    it('Should do nothing', () => {
-      expect(true).to.be.true;
-    });
 
-    it('should be defined', () => {
-      assert(client);
-    });
+  describe('initializeSharedBox function', () => {
+    
+
+
   });
 });
