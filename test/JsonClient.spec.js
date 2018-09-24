@@ -205,7 +205,21 @@ export default describe('JsonClient', () => {
     });
 
     it ('Should return a json saying it didin\'t close', () => {
+      const expectedResult = {
+        'result': false,
+        'message': 'Unable to close the Sharedbox.' 
+      };
+      sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object)
+        .callsFake(() => {
+          return {
+            'result': false,
+            'message': 'Unable to close the Sharedbox.'
+          };
+        });
       
+      const result = jsonClient.closeSharedbox('dc6f21e0f02c41123b795e4');
+      
+      expect(result).to.deep.equal(expectedResult);
     });
   });
 });
