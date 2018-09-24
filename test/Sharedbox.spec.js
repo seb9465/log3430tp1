@@ -128,10 +128,87 @@ export default describe('Sharedbox', () => {
         expect(sharedbox.closedAt).to.deep.equal(SHAREDBOX_OBJ.closedAt);
       });
     });
-    it('Should set to null (or default) all the property if no object is passed to the constructor', () => {
-      sharedbox = new SharedBox.Helpers.Sharedbox();
 
-      expect(sharedbox.guid).to.be.null;
+    describe('When given no parameter', () => {
+      beforeEach(() =>{
+        sharedbox = new SharedBox.Helpers.Sharedbox();
+      });
+
+      it('Should set the guid property to null', () => {
+        expect(sharedbox.guid).to.be.null;
+      });
+      it('Should set the userEmail property to null', () => {
+        expect(sharedbox.userEmail).to.be.null;
+      });
+      it('Should set the uploadUrl property to null', () => {
+        expect(sharedbox.uploadUrl).to.be.null;
+      });
+      it('Should set the recipients property to null', () => {
+        expect(sharedbox.recipients).to.be.an('array').that.is.empty;
+      });
+      it('Should set the attachements property to null', () => {
+        expect(sharedbox.attachements).to.be.undefined;
+      });
+      it('Should set the message property to null', () => {
+        expect(sharedbox.message).to.be.null;
+      });
+      it('Should set the subject property to null', () => {
+        expect(sharedbox.subject).to.be.null;
+      });
+      it('Should set the notificationLanguage property to null', () => {
+        expect(sharedbox.notificationLanguage).to.be.null;
+      });
+      it('Should set the securityOptions.allowRememberMe property to null', () => {
+        expect(sharedbox.securityOptions.allowRememberMe).to.be.null;
+      });
+      it('Should set the securityOptions.allowSms property to null', () => {
+        expect(sharedbox.securityOptions.allowSms).to.be.null;
+      });
+      it('Should set the securityOptions.allowVoice property to null', () => {
+        expect(sharedbox.securityOptions.allowVoice).to.be.null;
+      });
+      it('Should set the securityOptions.allowEmail property to null', () => {
+        expect(sharedbox.securityOptions.allowEmail).to.be.null;
+      });
+      it('Should set the securityOptions.expirationValue property to null', () => {
+        expect(sharedbox.securityOptions.expirationValue).to.be.null;
+      });
+      it('Should set the securityOptions.expirationUnit property to null', () => {
+        expect(sharedbox.securityOptions.expirationUnit).to.be.null;
+      });
+      it('Should set the securityOptions.retentionPeriodType property to null', () => {
+        expect(sharedbox.securityOptions.retentionPeriodType).to.be.null;
+      });
+      it('Should set the securityOptions.retentionPeriodValue property to null', () => {
+        expect(sharedbox.securityOptions.retentionPeriodValue).to.be.null;
+      });
+      it('Should set the securityOptions.retentionPeriodUnit property to null', () => {
+        expect(sharedbox.securityOptions.retentionPeriodUnit).to.be.null;
+      });
+      it('Should set the securityOptions.allowManualClose property to null', () => {
+        expect(sharedbox.securityOptions.allowManualClose).to.be.null;
+      });
+      it('Should set the userId property to null', () => {
+        expect(sharedbox.userId).to.be.null;
+      });
+      it('Should set the status property to null', () => {
+        expect(sharedbox.status).to.be.null;
+      });
+      it('Should set the previewUrl property to null', () => {
+        expect(sharedbox.previewUrl).to.be.null;
+      });
+      it('Should set the createdAt property to null', () => {
+        expect(sharedbox.createdAt).to.be.null;
+      });
+      it('Should set the updatedAt property to null', () => {
+        expect(sharedbox.updatedAt).to.be.null;
+      });
+      it('Should set the expiration property to null', () => {
+        expect(sharedbox.expiration).to.be.null;
+      });
+      it('Should set the closedAt property to null', () => {
+        expect(sharedbox.closedAt).to.be.null;
+      });      
     });
   });
 
