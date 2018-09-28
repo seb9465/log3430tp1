@@ -2,6 +2,7 @@ import Sharedbox from '../src/sharedbox';
 import * as chai from 'chai';
 import * as Utils from '../src/Utils/platform.js';
 import sinon from 'sinon';
+import { SharedBoxException } from '../src/modules/SharedBoxException';
 
 let expect = chai.expect;
 let assert = chai.assert;
@@ -65,7 +66,6 @@ export default describe('Client', () => {
     });
   });
 
-
   describe('initializeSharedBox function', () => {
     it('Should have called the fetch method twice', () => {
       let stub = sinon.stub(Utils, 'fetch').onCall(0).resolves({
@@ -98,4 +98,18 @@ export default describe('Client', () => {
       });
     });
   });
+  
+  describe('submitSharedbox function', () => {
+    it('Should return exception if guid field is empty', () => {
+      // let stub = sinon.stub(sharedbox, 'toObject');
+     
+      expect(client.get.bind(client, 'submitSharedBox')).to.throw('Property does not exist in model schema.');
+
+    });
+
+
+
+  });//fin describe
+
+
 });
