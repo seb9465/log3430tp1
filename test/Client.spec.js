@@ -107,12 +107,7 @@ export default describe('Client', () => {
 
       assert.throws(function() {client.submitSharedBox(sharedbox);}, SharedBoxException);
     });
-    // it('random', () => {
-    //   let stub = sinon.stub(Utils, 'fetch').onCall(0).callsFake(() => {
-    //     return 'blabla';
-    //   });
-    // });
-  });//fin describe
+  });
 
 
 });
