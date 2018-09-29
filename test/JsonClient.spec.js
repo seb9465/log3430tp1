@@ -1,7 +1,7 @@
 import SharedBox from '../src/sharedbox';
 import * as chai from 'chai';
 import sinon from 'sinon';
-import * as Utils from '../src/Utils/platform.js';
+// import * as Utils from '../src/Utils/platform.js';
 
 let expect = chai.expect;
 let assert = chai.assert;
@@ -53,45 +53,45 @@ export default describe('JsonClient', () => {
       expect(result).to.deep.equal(expectedResult);
       assert(makeRequestStub.calledOnceWith(expectedResult));
     });
-    it('Should give an empty object if the status is 204', () => {
-      const emptyEmail = '';
-      let stub = sinon.stub(Utils, 'fetch').resolves({
-        status: 204,
-        ok: true,
-        json: () =>{
-          return '';
-        },
-        text: () => {
-          return '';
-        },
-        statusText: '',
-      });
+    // it('Should give an empty object if the status is 204', () => {
+    //   const emptyEmail = '';
+    //   let stub = sinon.stub(Utils, 'fetch').resolves({
+    //     status: 204,
+    //     ok: true,
+    //     json: () =>{
+    //       return '';
+    //     },
+    //     text: () => {
+    //       return '';
+    //     },
+    //     statusText: '',
+    //   });
 
-      const result = jsonClient.initializeSharedBox(emptyEmail);
+    //   const result = jsonClient.initializeSharedBox(emptyEmail);
 
-      assert(stub.calledOnce);
-      expect(result).to.be.empty;
-      stub.restore();
-    });
-    it('Should return an error if the text is empty', () => {
-      let stub = sinon.stub(Utils, 'fetch').resolves({
-        status: 200,
-        ok: false,
-        json: () =>{
-          return null;
-        },
-        text: () => {
-          return null;
-        },
-        statusText: '',
-      });
+    //   assert(stub.calledOnce);
+    //   expect(result).to.be.empty;
+    //   stub.restore();
+    // });
+    // it('Should return an error if the text is empty', () => {
+    //   let stub = sinon.stub(Utils, 'fetch').resolves({
+    //     status: 200,
+    //     ok: false,
+    //     json: () =>{
+    //       return null;
+    //     },
+    //     text: () => {
+    //       return null;
+    //     },
+    //     statusText: '',
+    //   });
 
-      const result = jsonClient.initializeSharedBox('').then((err) => { expect(err).to.be.an('error'); });
+    //   const result = jsonClient.initializeSharedBox('').then((err) => { expect(err).to.be.an('error'); });
 
-      assert(stub.calledOnce);
-      expect(result).to.be.empty;
-      stub.restore();
-    });
+    //   assert(stub.calledOnce);
+    //   expect(result).to.be.empty;
+    //   stub.restore();
+    // });
   });
 
   describe('submitSharedbox function', () => {
