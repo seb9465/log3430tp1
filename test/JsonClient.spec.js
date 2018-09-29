@@ -53,25 +53,29 @@ export default describe('JsonClient', () => {
       expect(result).to.deep.equal(expectedResult);
       assert(makeRequestStub.calledOnceWith(expectedResult));
     });
-    it('Should have called the fetch method with the good url', () => {
+    it('Should have called the fetch method with the good urls', () => {
       let stub = sinon.stub(Utils, 'fetch').onCall(0).resolves(() => {
         return {
           ok: true,
-          text: 'endpoint',
+          text: 'endpoint/',
         };
       });
       stub.onCall(1).resolves(() => {
         return {
           status: 200,
           ok: true,
-          json: { message: 'Hello World' },
+          json: () => { return new Promise((resolve) => { resolve({ message: 'Hello World' });});},
         };
       });
+      
+      const expectedArgumentFirstCall = 'endpoint/services/sharedbox/server/url';
+      const expectedArgumentSecondCall = 'endpoint/api/sharedboxes/new?email=jonh.doe@me.com';
+      jsonClient.initializeSharedBox('jonh.doe@me.com').then((res) => {
+        expect(stub.getCall(0).args[0]).to.deep.equal(expectedArgumentFirstCall);
+        expect(stub.getCall(1).args[0]).to.deep.equal(expectedArgumentSecondCall);
+        expect(res.message).to.deep.equal('Hello World');
+      });
 
-      jsonClient.initializeSharedBox('jonh.doe@me.com');
-
-      const expectedArgumentsFirstCall = 'endpoint/services/sharedbox/server/url';
-      expect(stub.getCall(0).args[0]).to.deep.equal(expectedArgumentsFirstCall);
     });
   });
 
