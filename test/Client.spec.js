@@ -52,7 +52,6 @@ export default describe('Client', () => {
     it('should be defined', () => {
       assert(client);
     });
-
     it('Should have initialized the apiToken with the right value', () => {
       expect(client['apiToken']).to.deep.equal('api');
     });

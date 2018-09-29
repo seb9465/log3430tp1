@@ -1,7 +1,7 @@
 import SharedBox from '../src/sharedbox';
 import * as chai from 'chai';
 import sinon from 'sinon';
-// import * as Utils from '../src/Utils/platform.js';
+import * as Utils from '../src/Utils/platform.js';
 
 let expect = chai.expect;
 let assert = chai.assert;
@@ -53,45 +53,26 @@ export default describe('JsonClient', () => {
       expect(result).to.deep.equal(expectedResult);
       assert(makeRequestStub.calledOnceWith(expectedResult));
     });
-    // it('Should give an empty object if the status is 204', () => {
-    //   const emptyEmail = '';
-    //   let stub = sinon.stub(Utils, 'fetch').resolves({
-    //     status: 204,
-    //     ok: true,
-    //     json: () =>{
-    //       return '';
-    //     },
-    //     text: () => {
-    //       return '';
-    //     },
-    //     statusText: '',
-    //   });
+    it('Should have called the fetch method with the good url', () => {
+      let stub = sinon.stub(Utils, 'fetch').onCall(0).resolves(() => {
+        return {
+          ok: true,
+          text: 'endpoint',
+        };
+      });
+      stub.onCall(1).resolves(() => {
+        return {
+          status: 200,
+          ok: true,
+          json: { message: 'Hello World' },
+        };
+      });
 
-    //   const result = jsonClient.initializeSharedBox(emptyEmail);
+      jsonClient.initializeSharedBox('jonh.doe@me.com');
 
-    //   assert(stub.calledOnce);
-    //   expect(result).to.be.empty;
-    //   stub.restore();
-    // });
-    // it('Should return an error if the text is empty', () => {
-    //   let stub = sinon.stub(Utils, 'fetch').resolves({
-    //     status: 200,
-    //     ok: false,
-    //     json: () =>{
-    //       return null;
-    //     },
-    //     text: () => {
-    //       return null;
-    //     },
-    //     statusText: '',
-    //   });
-
-    //   const result = jsonClient.initializeSharedBox('').then((err) => { expect(err).to.be.an('error'); });
-
-    //   assert(stub.calledOnce);
-    //   expect(result).to.be.empty;
-    //   stub.restore();
-    // });
+      const expectedArgumentsFirstCall = 'endpoint/services/sharedbox/server/url';
+      expect(stub.getCall(0).args[0]).to.deep.equal(expectedArgumentsFirstCall);
+    });
   });
 
   describe('submitSharedbox function', () => {
@@ -166,7 +147,7 @@ export default describe('JsonClient', () => {
       assert(stub.calledOnceWith(expectedSuffix, expectedRequest));
       expect(result).not.to.be.an('error');
     });
-    it ('Should return the added recipient', () => {
+    it('Should return the added recipient', () => {
       const FAKE_RECIPIENT = {
         'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
         'firstName': 'John',
@@ -210,7 +191,7 @@ export default describe('JsonClient', () => {
   });
 
   describe('closeSharedbox function', () => {
-    it ('Should call the _makeRequest function with two parameters', () => {
+    it('Should call the _makeRequest function with two parameters', () => {
       const expectedSuffix = 'api/sharedboxes/dc6f21e0f02c41123b795e4/close';
       const expectedRequest = {
         headers: {
@@ -226,10 +207,10 @@ export default describe('JsonClient', () => {
       sinon.assert.calledWith(stub, expectedSuffix, expectedRequest);
     });
 
-    it ('Should return a json saying every worked', () => {
+    it('Should return a json saying every worked', () => {
       const expectedResult = {
         'result': true,
-        'message': 'Sharedbox successfully closed.' 
+        'message': 'Sharedbox successfully closed.'
       };
       sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object)
         .callsFake(() => {
@@ -238,16 +219,16 @@ export default describe('JsonClient', () => {
             'message': 'Sharedbox successfully closed.'
           };
         });
-      
+
       const result = jsonClient.closeSharedbox('dc6f21e0f02c41123b795e4');
-      
+
       expect(result).to.deep.equal(expectedResult);
     });
 
-    it ('Should return a json saying it didin\'t close', () => {
+    it('Should return a json saying it didin\'t close', () => {
       const expectedResult = {
         'result': false,
-        'message': 'Unable to close the Sharedbox.' 
+        'message': 'Unable to close the Sharedbox.'
       };
       sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object)
         .callsFake(() => {
@@ -256,9 +237,9 @@ export default describe('JsonClient', () => {
             'message': 'Unable to close the Sharedbox.'
           };
         });
-      
+
       const result = jsonClient.closeSharedbox('dc6f21e0f02c41123b795e4');
-      
+
       expect(result).to.deep.equal(expectedResult);
     });
   });

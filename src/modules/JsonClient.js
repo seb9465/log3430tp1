@@ -27,13 +27,13 @@ export default class JsonClient {
   }
 
   _makeRequest(suffixUrl,
-    request = { headers: { 'Authorization-Token': this.apiToken}, method: 'get' }) {
+    request = { headers: { 'Authorization-Token': this.apiToken }, method: 'get' }) {
     return this._getSharedBoxEndpoint(this.endpoint)
       .then(endpoint => {
         var url = `${endpoint}${suffixUrl}`;
         if (this.noCaching) {
           url += (suffixUrl.indexOf('?') >= 0 ? '&rand=' : '?rand=') +
-          new Date().getTime();
+            new Date().getTime();
         }
         return Utils.fetch(url, request);
       })
