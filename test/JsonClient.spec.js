@@ -13,7 +13,6 @@ export default describe('JsonClient', () => {
 
   beforeEach(() => {
     jsonClient = new SharedBox.JsonClient('api', 1, 'endpoint');
-
   });
 
   it('Should do nothing', () => {
@@ -28,12 +27,15 @@ export default describe('JsonClient', () => {
     it('Should have initialized apiToken property with the good value', () => {
       expect(jsonClient['apiToken']).to.deep.equal('api');
     });
+
     it('Should have initialized userId property with the good value', () => {
       expect(jsonClient['userId']).to.deep.equal(1);
     });
+
     it('Should have initialized endpoint property with the good value', () => {
       expect(jsonClient['endpoint']).to.deep.equal('endpoint');
     });
+
     it('Should have initialized noCaching property with the good value', () => {
       expect(jsonClient['noCaching']).to.be.false;
     });
@@ -53,6 +55,7 @@ export default describe('JsonClient', () => {
       expect(result).to.deep.equal(expectedResult);
       assert(makeRequestStub.calledOnceWith(expectedResult));
     });
+
     it('Should have called the fetch method with the good urls', () => {
       let stub = sinon.stub(Utils, 'fetch').onCall(0).resolves(() => {
         return {
@@ -109,6 +112,7 @@ export default describe('JsonClient', () => {
       'expiration': '2018-05-31T14:45:35.038Z',
       'closedAt': null
     };
+
     it('Should call the _makeRequest function with 2 parameters', () => {
       let makeResquestStub = sinon.stub(jsonClient, '_makeRequest').callsFake(() => {
         return SHAREDBOX;
@@ -143,7 +147,6 @@ export default describe('JsonClient', () => {
         body: message
       };
 
-
       const result = jsonClient.addRecipient(jsonClient.guid, message).then((stubResolve) => {
         expect(stubResolve).to.deep.equal('The request has been made.');
       });
@@ -151,6 +154,7 @@ export default describe('JsonClient', () => {
       assert(stub.calledOnceWith(expectedSuffix, expectedRequest));
       expect(result).not.to.be.an('error');
     });
+    
     it('Should return the added recipient', () => {
       const FAKE_RECIPIENT = {
         'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
