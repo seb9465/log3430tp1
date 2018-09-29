@@ -97,6 +97,7 @@ export default describe('Client', () => {
       client.initializeSharedBox(SHAREDBOX).then(() => {
         assert(stub.calledTwice);
       });
+      stub.restore();
     });
   });
 
