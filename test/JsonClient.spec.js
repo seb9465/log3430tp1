@@ -68,17 +68,18 @@ export default describe('JsonClient', () => {
       stub.onCall(1).resolves({
         status: 200,
         ok: true,
-        json: () => { return new Promise((resolve) => { resolve({ message: 'Hello World' }); }); },
+        json: () => { return new Promise((resolve) => { resolve({ guid: 'dc6f21e0f02c41123b795e4', uploadUrl: 'upload_url' }); }); },
         text: () => { return new Promise((resolve) => { resolve({ status: 501, statusText: 'An error as occuried' }); }); }
       });
 
       const expectedArgumentFirstCall = 'endpoint/services/sharedbox/server/url';
       const expectedArgumentSecondCall = 'endpoint/api/sharedboxes/new?email=jonh.doe@me.com';
+      const expectedJsonResult = { guid: 'dc6f21e0f02c41123b795e4', uploadUrl: 'upload_url' };
 
       jsonClient.initializeSharedBox('jonh.doe@me.com').then((res) => {
         expect(stub.getCall(0).args[0]).to.deep.equal(expectedArgumentFirstCall);
         expect(stub.getCall(1).args[0]).to.deep.equal(expectedArgumentSecondCall);
-        expect(res.message).to.deep.equal('Hello World');
+        expect(res).to.deep.equal(expectedJsonResult);
         expect(stub.callCount).to.deep.equal(2);
       }).catch(() => {
         assert(false);
