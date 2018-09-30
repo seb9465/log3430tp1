@@ -49,60 +49,31 @@ export default describe('Recipient', () => {
   });
 
   describe('Constructor', () => {
-    describe('Should initialize every properties with the object passed to the constructor', () => {
-      it('id property', () => {
-        expect(recipient.id).to.deep.equal(RECIPIENT_OBJ.id);
-      });
-      it('firstName property', () => {
-        expect(recipient.firstName).to.deep.equal(RECIPIENT_OBJ.firstName);
-      });
-      it('lastName property', () => {
-        expect(recipient.lastName).to.deep.equal(RECIPIENT_OBJ.lastName);
-      });
-      it('email property', () => {
-        expect(recipient.email).to.deep.equal(RECIPIENT_OBJ.email);
-      });
-      it('locked option property', () => {
-        expect(recipient.options.locked).to.deep.equal(RECIPIENT_OBJ.options.locked);
-      });
-      it('bouncedEmail option property', () => {
-        expect(recipient.options.bouncedEmail).to.deep.equal(RECIPIENT_OBJ.options.bouncedEmail);
-      });
-      it('verified option property', () => {
-        expect(recipient.options.verified).to.deep.equal(RECIPIENT_OBJ.options.verified);
-      });
-      it('contactMethod option property', () => {
-        expect(recipient.options.contactMethods).to.be.an('array').that.is.not.empty;
-      });
+    it('Should initialize every properties with the object passed to the constructor', () => {
+      expect(recipient.id).to.deep.equal(RECIPIENT_OBJ.id);
+      expect(recipient.firstName).to.deep.equal(RECIPIENT_OBJ.firstName);
+      expect(recipient.lastName).to.deep.equal(RECIPIENT_OBJ.lastName);
+      expect(recipient.email).to.deep.equal(RECIPIENT_OBJ.email);
+      expect(recipient.options.locked).to.deep.equal(RECIPIENT_OBJ.options.locked);
+      expect(recipient.options.bouncedEmail).to.deep.equal(RECIPIENT_OBJ.options.bouncedEmail);
+      expect(recipient.options.verified).to.deep.equal(RECIPIENT_OBJ.options.verified);
+      expect(recipient.options.contactMethods).to.be.an('array').that.is.not.empty;
     });
 
     describe('Should initialize with null or default value when no object is given to the constructor', () => {
       beforeEach(() => {
-        recipient = new SharedBox.Helpers.Recipient();
       });
 
-      it('id property', () => {
+      it('Should initialize all the properties with null or default value when no object is given to the constructor', () => {
+        recipient = new SharedBox.Helpers.Recipient();
+
         expect(recipient.id).to.be.null;
-      });
-      it('firstName property', () => {
         expect(recipient.firstName).to.be.null;
-      });
-      it('lastName property', () => {
         expect(recipient.lastName).to.be.null;
-      });
-      it('email property', () => {
         expect(recipient.email).to.be.null;
-      });
-      it('locked option property', () => {
         expect(recipient.options.locked).to.be.null;
-      });
-      it('bouncedEmail option property', () => {
         expect(recipient.options.bouncedEmail).to.be.null;
-      });
-      it('verified option property', () => {
         expect(recipient.options.verified).to.be.null;
-      });
-      it('contactMethod option property', () => {
         expect(recipient.options.contactMethods).to.be.an('array').that.is.empty;
       });
     });

@@ -125,9 +125,11 @@ export default describe('Sharedbox', () => {
         }
       };
 
-      let result = JSON.parse(sharedbox.toJson());
+      let result = sharedbox.toJson();
 
-      expect(result).to.deep.equal(expectedResult);
+      expect(JSON.parse(result)).to.deep.equal(expectedResult);
+      expect(result).to.be.a('string');
     });
+    
   });
 });
