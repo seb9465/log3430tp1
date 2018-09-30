@@ -38,16 +38,15 @@ const SHAREDBOX_OBJ = {
 export default describe('Sharedbox', () => {
   let sharedbox;
 
-  beforeEach(() => {
-    sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_OBJ);
-  });
-  
   describe('Constructor', () => {
     it('should be defined', () => {
+      sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_OBJ);
       assert(sharedbox);
     });
 
     it('Should set the properties with the passed object to the constructor', () => {
+      sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_OBJ);
+
       expect(sharedbox.guid).to.deep.equal(SHAREDBOX_OBJ.guid);
       expect(sharedbox.userEmail).to.deep.equal(SHAREDBOX_OBJ.userEmail);
       expect(sharedbox.uploadUrl).to.deep.equal(SHAREDBOX_OBJ.uploadUrl);
@@ -77,6 +76,7 @@ export default describe('Sharedbox', () => {
 
     it('Should set the properties to null if when no parameter is passed to the constructor', () => {
       sharedbox = new SharedBox.Helpers.Sharedbox();
+      
       expect(sharedbox.guid).to.be.null;
       expect(sharedbox.userEmail).to.be.null;
       expect(sharedbox.uploadUrl).to.be.null;
@@ -107,6 +107,7 @@ export default describe('Sharedbox', () => {
 
   describe('toJson function', () => {
     it('Should return the json object', () => {
+      sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_OBJ);
       const expectedResult = {
         'sharedbox': {
           'guid': SHAREDBOX_OBJ.guid,
@@ -130,6 +131,16 @@ export default describe('Sharedbox', () => {
       expect(JSON.parse(result)).to.deep.equal(expectedResult);
       expect(result).to.be.a('string');
     });
-    
+
+    describe('When converting to json, parsing it, and creating a new object with that object', () => {
+      // sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_OBJ);
+      // const sharedboxToJson = sharedbox.toJson();
+      // const sharedboxParsed = JSON.parse(sharedboxToJson);
+      // const newSharedbox = new SharedBox.Helpers.Sharedbox(sharedboxParsed);
+
+      it('Should set the GUID property to the same one as the first sharedbox', () => {
+
+      });
+    });
   });
 });
