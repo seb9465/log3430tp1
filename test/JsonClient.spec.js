@@ -56,29 +56,32 @@ export default describe('JsonClient', () => {
       assert(makeRequestStub.calledOnceWith(expectedResult));
     });
 
-    it('Should have called the fetch method with the good urls', () => {
-      let stub = sinon.stub(Utils, 'fetch').onCall(0).resolves(() => {
-        return {
-          ok: true,
-          text: 'endpoint/',
-        };
+    it('Should have called the fetch method twice with the good urls', () => {
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: true,
+        text: () => { return 'endpoint/'; },
+        status: 200,
+        statusText: 'An error as occuried'
       });
-      stub.onCall(1).resolves(() => {
-        return {
-          status: 200,
-          ok: true,
-          json: () => { return new Promise((resolve) => { resolve({ message: 'Hello World' });});},
-        };
+      stub.onCall(1).resolves({
+        status: 200,
+        ok: true,
+        json: () => { return new Promise((resolve) => { resolve({ message: 'Hello World' }); }); },
+        text: () => { return new Promise((resolve) => { resolve({ status: 501, statusText: 'An error as occuried' }); }); }
       });
-      
+
       const expectedArgumentFirstCall = 'endpoint/services/sharedbox/server/url';
       const expectedArgumentSecondCall = 'endpoint/api/sharedboxes/new?email=jonh.doe@me.com';
-      jsonClient.initializeSharedBox('jonh.doe@me.com').then((res) => {
+      
+      return jsonClient.initializeSharedBox('jonh.doe@me.com').then((res) => {
         expect(stub.getCall(0).args[0]).to.deep.equal(expectedArgumentFirstCall);
         expect(stub.getCall(1).args[0]).to.deep.equal(expectedArgumentSecondCall);
         expect(res.message).to.deep.equal('Hello World');
+        expect(stub.callCount).to.deep.equal(2);
+      }).catch(() => {
+        assert(false);
       });
-
     });
   });
 
@@ -154,7 +157,7 @@ export default describe('JsonClient', () => {
       assert(stub.calledOnceWith(expectedSuffix, expectedRequest));
       expect(result).not.to.be.an('error');
     });
-    
+
     it('Should return the added recipient', () => {
       const FAKE_RECIPIENT = {
         'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
@@ -250,5 +253,9 @@ export default describe('JsonClient', () => {
 
       expect(result).to.deep.equal(expectedResult);
     });
+  });
+
+  afterEach(() => {
+    sinon.restore();
   });
 });
