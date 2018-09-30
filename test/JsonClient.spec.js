@@ -2,6 +2,7 @@ import SharedBox from '../src/sharedbox';
 import * as chai from 'chai';
 import sinon from 'sinon';
 import * as Utils from '../src/Utils/platform.js';
+import { SharedBoxException } from '../src/modules/SharedBoxException';
 
 let expect = chai.expect;
 let assert = chai.assert;
@@ -73,8 +74,8 @@ export default describe('JsonClient', () => {
 
       const expectedArgumentFirstCall = 'endpoint/services/sharedbox/server/url';
       const expectedArgumentSecondCall = 'endpoint/api/sharedboxes/new?email=jonh.doe@me.com';
-      
-      return jsonClient.initializeSharedBox('jonh.doe@me.com').then((res) => {
+
+      jsonClient.initializeSharedBox('jonh.doe@me.com').then((res) => {
         expect(stub.getCall(0).args[0]).to.deep.equal(expectedArgumentFirstCall);
         expect(stub.getCall(1).args[0]).to.deep.equal(expectedArgumentSecondCall);
         expect(res.message).to.deep.equal('Hello World');
@@ -82,6 +83,44 @@ export default describe('JsonClient', () => {
       }).catch(() => {
         assert(false);
       });
+    });
+
+    it('Should throw an error if the first fetch call responded with an non-ok response', () => {
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: false,
+        status: 501,
+        statusText: 'Internal server error'
+      });
+
+      jsonClient.initializeSharedBox('').then(() => {
+        console.log('FALSE');
+      }).catch((err) => {
+        expect(err).to.be.an('error');
+      });
+    });
+
+    it('Should throw an error if the second fetch call responded with an non-ok response', () => {
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: true,
+        text: () => { return 'endpoint/'; },
+      });
+      stub.onCall(1).resolves({
+        status: 501,
+        ok: false,
+        text: () => {
+          return new Promise((resolve) => {
+            resolve({
+              status: 501,
+              statusText: 'Internal Server Error'
+            });
+          });
+        },
+        statusText: 'Internal Server Error',
+      });
+
+      expect(function() { jsonClient.initializeSharedBox(''); }, SharedBoxException);
     });
   });
 
