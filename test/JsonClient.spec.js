@@ -14,24 +14,15 @@ export default describe('JsonClient', () => {
     jsonClient = new SharedBox.JsonClient('api', 1, 'endpoint');
   });
 
-  it('Should be defined', () => {
-    assert(jsonClient);
-  });
-
   describe('Constructor', () => {
-    it('Should have initialized apiToken property with the good value', () => {
+    it('Should be defined', () => {
+      assert(jsonClient);
+    });
+    
+    it('Should have initialized the properties with the good value', () => {
       expect(jsonClient['apiToken']).to.deep.equal('api');
-    });
-
-    it('Should have initialized userId property with the good value', () => {
       expect(jsonClient['userId']).to.deep.equal(1);
-    });
-
-    it('Should have initialized endpoint property with the good value', () => {
       expect(jsonClient['endpoint']).to.deep.equal('endpoint');
-    });
-
-    it('Should have initialized noCaching property with the good value', () => {
       expect(jsonClient['noCaching']).to.be.false;
     });
   });
