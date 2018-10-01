@@ -9,15 +9,9 @@ let assert = chai.assert;
 
 export default describe('JsonClient', () => {
   let jsonClient;
-  // let stub;
-  // let setStub = 
 
   beforeEach(() => {
     jsonClient = new SharedBox.JsonClient('api', 1, 'endpoint');
-  });
-
-  it('Should do nothing', () => {
-    expect(true).to.be.true;
   });
 
   it('Should be defined', () => {
