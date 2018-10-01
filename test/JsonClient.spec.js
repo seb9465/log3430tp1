@@ -43,6 +43,7 @@ export default describe('JsonClient', () => {
     });
 
     it('Should have called the fetch method twice with the good urls', () => {
+      // Arrange
       let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
       stub.onCall(0).resolves({
         ok: true,
@@ -61,7 +62,9 @@ export default describe('JsonClient', () => {
       const expectedArgumentSecondCall = 'endpoint/api/sharedboxes/new?email=jonh.doe@me.com';
       const expectedJsonResult = { guid: 'dc6f21e0f02c41123b795e4', uploadUrl: 'upload_url' };
 
+      // Act
       jsonClient.initializeSharedBox('jonh.doe@me.com').then((res) => {
+        // Assert
         expect(stub.getCall(0).args[0]).to.deep.equal(expectedArgumentFirstCall);
         expect(stub.getCall(1).args[0]).to.deep.equal(expectedArgumentSecondCall);
         expect(res).to.deep.equal(expectedJsonResult);
@@ -72,6 +75,7 @@ export default describe('JsonClient', () => {
     });
 
     it('Should throw an error if the first fetch call responded with an non-ok response', () => {
+      // Arrange
       let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
       stub.onCall(0).resolves({
         ok: false,
@@ -79,14 +83,17 @@ export default describe('JsonClient', () => {
         statusText: 'Internal server error'
       });
 
+      // Act
       jsonClient.initializeSharedBox('').then(() => {
-        console.log('FALSE');
+        assert(false);
       }).catch((err) => {
+        // Assert.
         expect(err).to.be.an('error');
       });
     });
 
     it('Should throw an error if the second fetch call responded with an non-ok response', () => {
+      // Arrange
       let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
       stub.onCall(0).resolves({
         ok: true,
@@ -106,6 +113,7 @@ export default describe('JsonClient', () => {
         statusText: 'Internal Server Error',
       });
 
+      // Act & Arrange
       expect(function() { jsonClient.initializeSharedBox(''); }, SharedBoxException);
     });
   });
@@ -142,26 +150,31 @@ export default describe('JsonClient', () => {
     };
 
     it('Should call the _makeRequest function with 2 parameters', () => {
+      // Arrange
       let makeResquestStub = sinon.stub(jsonClient, '_makeRequest').callsFake(() => {
         return SHAREDBOX;
       });
-
-      let result = jsonClient.submitSharedBox(SHAREDBOX);
-
-      expect(result).to.deep.equal(SHAREDBOX);
-      assert(makeResquestStub.calledOnceWith('api/sharedboxes', {
+      const expectedSecondArg = {
         headers: {
           'Authorization-Token': jsonClient.apiToken,
           'Content-Type': 'application/json'
         },
         method: 'post',
         body: SHAREDBOX
-      }));
+      };
+
+      // Act
+      let result = jsonClient.submitSharedBox(SHAREDBOX);
+
+      // Assert
+      expect(result).to.deep.equal(SHAREDBOX);
+      assert(makeResquestStub.calledOnceWith('api/sharedboxes', expectedSecondArg));
     });
   });
 
   describe('addRecipient function', () => {
     it('Should call the _makeRequest function with two parameters', () => {
+      // Arrange
       let stub = sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object);
       stub.resolves('The request has been made.');
       const message = 'hello world';
@@ -175,15 +188,18 @@ export default describe('JsonClient', () => {
         body: message
       };
 
+      // Act
       const result = jsonClient.addRecipient(jsonClient.guid, message).then((stubResolve) => {
         expect(stubResolve).to.deep.equal('The request has been made.');
       });
 
+      // Assert
       assert(stub.calledOnceWith(expectedSuffix, expectedRequest));
       expect(result).not.to.be.an('error');
     });
 
     it('Should return the added recipient', () => {
+      // Arrange
       const FAKE_RECIPIENT = {
         'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
         'firstName': 'John',
@@ -218,8 +234,10 @@ export default describe('JsonClient', () => {
         return FAKE_RECIPIENT;
       });
 
+      // Act
       const result = jsonClient.addRecipient(jsonClient.guid, message);
 
+      // Assert
       expect(result).to.deep.equal(FAKE_RECIPIENT);
       assert.isDefined(result);
     });
@@ -228,6 +246,7 @@ export default describe('JsonClient', () => {
 
   describe('closeSharedbox function', () => {
     it('Should call the _makeRequest function with two parameters', () => {
+      // Arrange
       const expectedSuffix = 'api/sharedboxes/dc6f21e0f02c41123b795e4/close';
       const expectedRequest = {
         headers: {
@@ -238,12 +257,15 @@ export default describe('JsonClient', () => {
       };
       let stub = sinon.stub(jsonClient, '_makeRequest').withArgs(sinon.match.string, sinon.match.object);
 
+      // Act
       jsonClient.closeSharedbox('dc6f21e0f02c41123b795e4');
 
+      // Assert
       sinon.assert.calledWith(stub, expectedSuffix, expectedRequest);
     });
 
     it('Should return a json saying every worked', () => {
+      // Arrange
       const expectedResult = {
         'result': true,
         'message': 'Sharedbox successfully closed.'
@@ -256,12 +278,15 @@ export default describe('JsonClient', () => {
           };
         });
 
+      // Act
       const result = jsonClient.closeSharedbox('dc6f21e0f02c41123b795e4');
 
+      // Assert
       expect(result).to.deep.equal(expectedResult);
     });
 
     it('Should return a json saying it didin\'t close', () => {
+      // Arrange
       const expectedResult = {
         'result': false,
         'message': 'Unable to close the Sharedbox.'
@@ -274,8 +299,10 @@ export default describe('JsonClient', () => {
           };
         });
 
+      // Act
       const result = jsonClient.closeSharedbox('dc6f21e0f02c41123b795e4');
 
+      // Assert
       expect(result).to.deep.equal(expectedResult);
     });
   });
