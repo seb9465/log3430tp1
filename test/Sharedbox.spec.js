@@ -133,13 +133,87 @@ export default describe('Sharedbox', () => {
     });
 
     describe('When converting to json, parsing it, and creating a new object with that object', () => {
-      // sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_OBJ);
-      // const sharedboxToJson = sharedbox.toJson();
-      // const sharedboxParsed = JSON.parse(sharedboxToJson);
-      // const newSharedbox = new SharedBox.Helpers.Sharedbox(sharedboxParsed);
+      sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_OBJ);
+      const sharedboxToJson = sharedbox.toJson();
+      const sharedboxParsed = JSON.parse(sharedboxToJson);
+      console.log(sharedboxParsed);
+      const newSharedbox = new SharedBox.Helpers.Sharedbox(sharedboxParsed.sharedbox);
+      console.log(newSharedbox);
 
       it('Should set the GUID property to the same one as the first sharedbox', () => {
-
+        expect(newSharedbox.guid).to.deep.equal(sharedbox.guid);
+      });
+      it('Should set the UserEmail property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.userEmail).to.deep.equal(sharedbox.userEmail);
+      });
+      it('Should set the UploadUrl property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.uploadUrl).to.deep.equal(sharedbox.uploadUrl);
+      });
+      it('Should set the Recipients property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.recipients).to.deep.equal(sharedbox.recipients);
+      });
+      it('Should set the Attachements property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.attachements).to.deep.equal(sharedbox.attachements);
+      });
+      it('Should set the Message property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.message).to.deep.equal(sharedbox.message);
+      });
+      it('Should set the Subject property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.subject).to.deep.equal(sharedbox.subject);
+      });
+      it('Should set the NotificationLanguage property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.notificationLanguage).to.deep.equal(sharedbox.notificationLanguage);
+      });
+      it.skip('Should set the securityOptions.allowRememberMe property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.allowRememberMe).to.deep.equal(sharedbox.securityOptions.allowRememberMe);
+      });
+      it.skip('Should set the securityOptions.allowSms property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.allowSms).to.deep.equal(sharedbox.securityOptions.allowSms);
+      });
+      it.skip('Should set the securityOptions.allowVoice property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.allowVoice).to.deep.equal(sharedbox.securityOptions.allowVoice);
+      });
+      it.skip('Should set the securityOptions.allowEmail property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.allowEmail).to.deep.equal(sharedbox.securityOptions.allowEmail);
+      });
+      it.skip('Should set the securityOptions.expirationValue property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.expirationValue).to.deep.equal(sharedbox.securityOptions.expirationValue);
+      });
+      it.skip('Should set the securityOptions.expirationUnit property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.expirationUnit).to.deep.equal(sharedbox.securityOptions.expirationUnit);
+      });
+      it.skip('Should set the securityOptions.retentionPeriodType property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.retentionPeriodType).to.deep.equal(sharedbox.securityOptions.retentionPeriodType);
+      });
+      it('Should set the securityOptions.retentionPeriodValue property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.retentionPeriodValue).to.deep.equal(sharedbox.securityOptions.retentionPeriodValue);
+      });
+      it.skip('Should set the securityOptions.retentionPeriodUnit property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.retentionPeriodUnit).to.deep.equal(sharedbox.securityOptions.retentionPeriodUnit);
+      });
+      it.skip('Should set the SecurityOptions.allowManualClose property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.securityOptions.allowManualClose).to.deep.equal(sharedbox.securityOptions.allowManualClose);
+      });
+      it.skip('Should set the UserID property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.userId).to.deep.equal(sharedbox.userId);
+      });
+      it.skip('Should set the Status property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.status).to.deep.equal(sharedbox.status);
+      });
+      it.skip('Should set the PreviewURL property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.previewUrl).to.deep.equal(sharedbox.previewUrl);
+      });
+      it.skip('Should set the CreatedAt property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.createdAt).to.deep.equal(sharedbox.createdAt);
+      });
+      it.skip('Should set the UpdatedAt property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.updatedAt).to.deep.equal(sharedbox.updatedAt);
+      });
+      it.skip('Should set the Expiration property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.expiration).to.deep.equal(sharedbox.expiration);
+      });
+      it('Should set the ClosedAt property to the same one as the first sharedbox', () => {
+        expect(newSharedbox.closedAt).to.deep.equal(sharedbox.closedAt);
       });
     });
   });
