@@ -300,11 +300,15 @@ export default describe('Client', () => {
       const recipient = new SharedBox.Helpers.Recipient(RECIPIENT_JSON);
 
       // Act & Assert
-      expect(() => { client.addRecipient(sharedbox, recipient); }, SharedBoxException);
+      assert.throws(() => { client.addRecipient(sharedbox, recipient); }, SharedBoxException, 'SharedBox GUID cannot be null or undefined');
     });
     
-    it('Should throw an error if the sharedbox\'s email is undefined', () => {
-      
+    it('Should throw an error if the recipient\'s email is undefined', () => {
+      const sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_JSON);
+      const recipient = new SharedBox.Helpers.Recipient();
+
+      // Act & Asser
+      assert.throws(() => { client.addRecipient(sharedbox, recipient); }, SharedBoxException, 'Recipient email cannot be null or undefined');
     });
 
     it('Should return the updated sharedbox', () => {
