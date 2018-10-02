@@ -87,7 +87,7 @@ export default describe('Client', () => {
       });
     });
 
-    it('Should throw an error if the first fetch call respondes with a non-ok response', () => {
+    it('Should throw an error if the first fetch called respondes with a non-ok response', () => {
       // Arrange
       const sharedbox = new SharedBox.Helpers.Sharedbox({ userEmail: 'jonh.doe@me.com' });
       let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
@@ -107,7 +107,7 @@ export default describe('Client', () => {
       expect(function () { client.initializeSharedBox(sharedbox); }, SharedBoxException);
     });
 
-    it('Should throw an error if the second fetch call repondes with a non-ok response', () => {
+    it('Should throw an error if the second fetch called repondes with a non-ok response', () => {
       // Arrange
       const sharedbox = new SharedBox.Helpers.Sharedbox({ userEmail: 'jonh.doe@me.com' });
       let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
@@ -136,12 +136,15 @@ export default describe('Client', () => {
 
   describe('submitSharedbox function', () => {
     it('Should return exception if guid field is empty', () => {
+      // Arrange
       let sharedbox = new SharedBox.Helpers.Sharedbox();
 
+      // Act & Arrange
       assert.throws(function () { client.submitSharedBox(sharedbox); }, SharedBoxException);
     });
 
     it('Should call the fetch method twice and return the updated SharedBox', () => {
+      // Arrange
       let sharedbox = new Sharedbox.Helpers.Sharedbox(SHAREDBOX_JSON);
       let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
       stub.onCall(0).resolves({
@@ -178,12 +181,57 @@ export default describe('Client', () => {
         text: () => { return new Promise((resolve) => { resolve({ status: 501, statusText: 'An error as occuried' }); }); }
       });
 
-      client.initializeSharedBox(sharedbox).then((res) => {
+      // Act
+      client.submitSharedBox(sharedbox).then((res) => {
+        // Assert
         assert(stub.calledTwice);
         expect(res.securityOptions).to.be.an('object');
         expect(stub.getCall(0).args[0]).to.be.a('string');
+        expect(stub.getCall(0).args[1]).to.be.an('object');
+        expect(stub.getCall(1).args[0]).to.be.an('string');
         expect(stub.getCall(1).args[1]).to.be.an('object');
       });
+    });
+
+    it('Should throw an error if the first fetch called respondes with a non-ok response', () => {
+      // Arrange
+      const sharedbox = new Sharedbox.Helpers.Sharedbox(SHAREDBOX_JSON);
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: false,
+        status: 501,
+        statusText: 'Internal server error',
+      });
+      stub.onCall(1).resolves({
+        status: 200,
+        ok: true,
+        json: () => {
+          return new Promise((resolve) => {
+            resolve({
+              'guid': '1c820789a50747df8746aa5d71922a3f',
+              'userId': 3,
+              'subject': 'Donec rutrum congue leo eget malesuada.',
+              'expiration': '2018-12-06T05:38:09.951Z',
+              'notificationLanguage': 'en',
+              'status': 'in_progress',
+              'allowRememberMe': false,
+              'allowSms': false,
+              'allowVoice': false,
+              'allowEmail': true,
+              'retentionPeriodType': 'discard_at_expiration',
+              'retentionPeriodValue': null,
+              'retentionPeriodUnit': null,
+              'previewUrl': 'http://sharedbox.com/sharedboxes/dhjewg67ewtfg476/preview',
+              'createdAt': '2018-12-05T22:38:09.965Z',
+              'updatedAt': '2018-12-05T22:38:09.965Z'
+            });
+          });
+        },
+        text: () => { return new Promise((resolve) => { resolve({ status: 501, statusText: 'An error as occuried' }); }); }
+      });
+
+      // Act & Assert
+      expect(function() { client.submitSharedBox(sharedbox); }, SharedBoxException);
     });
 
     
