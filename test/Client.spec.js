@@ -1,6 +1,6 @@
 import Sharedbox from '../src/sharedbox';
 import * as chai from 'chai';
-// import * as Utils from '../src/Utils/platform.js';
+import * as Utils from '../src/Utils/platform.js';
 import sinon from 'sinon';
 import SharedBox from '../src/sharedbox';
 import { SharedBoxException } from '../src/modules/SharedBoxException';
@@ -32,6 +32,30 @@ export default describe('Client', () => {
   });
 
   describe('initializeSharedBox function', () => {
+    it('Should call the fetch method twice', () => {
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: true,
+        text: () => { return 'endpoint/'; },
+        status: 200,
+        statusText: 'Everything\'s fine'
+      });
+      stub.onCall(1).resolves({
+        status: 200,
+        ok: true,
+        json: () => { return new Promise((resolve) => { resolve({ guid: 'dc6f21e0f02c41123b795e4', uploadUrl: 'upload_url' }); }); },
+        text: () => { return new Promise((resolve) => { resolve({ status: 501, statusText: 'An error as occuried' }); }); }
+      });
+      const sharedbox = new SharedBox.Helpers.Sharedbox({ userEmail: 'jonh.doe@me.com' });
+
+      client.initializeSharedBox(sharedbox).then((result) => {
+        expect(result.guid).to.deep.equal('dc6f21e0f02c41123b795e4');
+        expect(result.uploadUrl).to.deep.equal('upload_url');
+        assert(stub.calledTwice);
+      }).catch(() => {
+        assert(false);
+      });
+    });
   });
 
   describe('submitSharedbox function', () => {
