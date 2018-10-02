@@ -49,7 +49,7 @@ export default describe('JsonClient', () => {
         ok: true,
         text: () => { return 'endpoint/'; },
         status: 200,
-        statusText: 'An error as occuried'
+        statusText: 'Everything\'s fine'
       });
       stub.onCall(1).resolves({
         status: 200,
@@ -241,7 +241,6 @@ export default describe('JsonClient', () => {
       expect(result).to.deep.equal(FAKE_RECIPIENT);
       assert.isDefined(result);
     });
-
   });
 
   describe('closeSharedbox function', () => {

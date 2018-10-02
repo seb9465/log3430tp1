@@ -132,13 +132,15 @@ export default describe('Sharedbox', () => {
     });
 
     describe('When converting to json, parsing it, and creating a new object with that object', () => {
+      // Arrange
       sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_OBJ);
+
+      // Act
       const sharedboxToJson = sharedbox.toJson();
       const sharedboxParsed = JSON.parse(sharedboxToJson);
-      console.log(sharedboxParsed);
       const newSharedbox = new SharedBox.Helpers.Sharedbox(sharedboxParsed.sharedbox);
-      console.log(newSharedbox);
 
+      // Asserts
       it('Should set the GUID property to the same one as the first sharedbox', () => {
         expect(newSharedbox.guid).to.deep.equal(sharedbox.guid);
       });
