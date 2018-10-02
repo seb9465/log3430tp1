@@ -372,11 +372,94 @@ export default describe('Client', () => {
     });
 
     it('Should throw and error if the first fetch called respondes with a non-ok response', () => {
+      // Arrange
+      const sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_JSON);
+      const recipient = new SharedBox.Helpers.Recipient(RECIPIENT_JSON);
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: false,
+        status: 501,
+        statusText: 'Internal Server Error',
+      });
+      stub.onCall(1).resolves({
+        status: 200,
+        ok: true,
+        json: () => {
+          return new Promise((resolve) => {
+            resolve({
+              'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
+              'firstName': 'John',
+              'lastName': 'Doe',
+              'email': 'john.doe@email.com',
+              'options': {
+                'locked': false,
+                'bouncedEmail': false,
+                'verified': false,
+                'contactMethods': [
+                  {
+                    'id': 1,
+                    'destination': '+55555555555',
+                    'destinationType': 'office_phone',
+                    'verified': false,
+                    'createdAt': '2018-09-01T16:26:07-04:00',
+                    'updatedAt': '2018-09-01T16:26:07-04:00'
+                  },
+                  {
+                    'id': 2,
+                    'destination': '+1111111111',
+                    'destinationType': 'cell_phone',
+                    'verified': true,
+                    'createdAt': '2018-09-01T16:26:07-04:00',
+                    'updatedAt': '2018-09-01T16:26:07-04:00'
+                  }
+                ]
+              }
+            });
+          });
+        },
+        text: () => { return new Promise((resolve) => { resolve({ status: 501, statusText: 'An error as occuried' }); }); }
+      });
 
+      // Act
+      client.addRecipient(sharedbox, recipient).then(() => {
+        assert(false);
+      }).catch((err) => {
+        // Assert
+        expect(err).to.be.an('error');
+      });
     });
 
     it('Should throw and error if the second fetch called respondes with a non-ok response', () => {
+      const sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_JSON);
+      const recipient = new SharedBox.Helpers.Recipient(RECIPIENT_JSON);
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: true,
+        text: () => { return 'endpoint/'; },
+        status: 200,
+        statusText: 'Everything\'s fine',
+      });
+      stub.onCall(1).resolves({
+        status: 501,
+        ok: false,
+        text: () => {
+          return new Promise((resolve) => {
+            resolve({
+              status: 501,
+              statusText: 'Internal Server Error'
+            });
+          });
+        },
+        statusText: 'Internal Server Error',
+      });
 
+      // Act
+      client.addRecipient(sharedbox, recipient).then(() => {
+        assert(false);
+      }).catch((err) => {
+        // Assert
+        expect(err).to.be.an('error');
+      });
     });    
   });
 
