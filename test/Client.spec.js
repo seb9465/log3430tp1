@@ -107,7 +107,7 @@ export default describe('Client', () => {
       expect(function () { client.initializeSharedBox(sharedbox); }, SharedBoxException);
     });
 
-    it('Should throw an error if the second fetch called repondes with a non-ok response', () => {
+    it('Should throw an error if the second fetch called respondes with a non-ok response', () => {
       // Arrange
       const sharedbox = new SharedBox.Helpers.Sharedbox({ userEmail: 'jonh.doe@me.com' });
       let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
@@ -231,10 +231,36 @@ export default describe('Client', () => {
       });
 
       // Act & Assert
-      expect(function() { client.submitSharedBox(sharedbox); }, SharedBoxException);
+      expect(function () { client.submitSharedBox(sharedbox); }, SharedBoxException);
     });
 
-    
+    it('Should throw an error if the second fetch called respondes with a non-ok response', () => {
+      // Arrange
+      let sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_JSON);
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: true,
+        text: () => { return 'endpoint/'; },
+        status: 200,
+        statusText: 'Everything\'s fine'
+      });
+      stub.onCall(1).resolves({
+        status: 501,
+        ok: false,
+        text: () => {
+          return new Promise((resolve) => {
+            resolve({
+              status: 501,
+              statusText: 'Internal Server Error'
+            });
+          });
+        },
+        statusText: 'Internal Server Error',
+      });
+
+      // Act & Arrange
+      expect(function () { client.sbmitSharedBox(sharedbox); }, SharedBoxException);
+    });
   });
 
   afterEach(() => {
