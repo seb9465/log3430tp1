@@ -311,8 +311,64 @@ export default describe('Client', () => {
       assert.throws(() => { client.addRecipient(sharedbox, recipient); }, SharedBoxException, 'Recipient email cannot be null or undefined');
     });
 
-    it('Should return the updated sharedbox', () => {
+    it('Should return the updated recipient', () => {
+      const sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_JSON);
+      const recipient = new SharedBox.Helpers.Recipient(RECIPIENT_JSON);
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: true,
+        text: () => { return 'endpoint/'; },
+        status: 200,
+        statusText: 'Everything\'s fine',
+      });
+      stub.onCall(1).resolves({
+        status: 200,
+        ok: true,
+        json: () => {
+          return new Promise((resolve) => {
+            resolve({
+              'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
+              'firstName': 'John',
+              'lastName': 'Doe',
+              'email': 'john.doe@email.com',
+              'options': {
+                'locked': false,
+                'bouncedEmail': false,
+                'verified': false,
+                'contactMethods': [
+                  {
+                    'id': 1,
+                    'destination': '+55555555555',
+                    'destinationType': 'office_phone',
+                    'verified': false,
+                    'createdAt': '2018-09-01T16:26:07-04:00',
+                    'updatedAt': '2018-09-01T16:26:07-04:00'
+                  },
+                  {
+                    'id': 2,
+                    'destination': '+1111111111',
+                    'destinationType': 'cell_phone',
+                    'verified': true,
+                    'createdAt': '2018-09-01T16:26:07-04:00',
+                    'updatedAt': '2018-09-01T16:26:07-04:00'
+                  }
+                ]
+              }
+            });
+          });
+        },
+        text: () => { return new Promise((resolve) => { resolve({ status: 501, statusText: 'An error as occuried' }); }); }
+      });
 
+      const expectedSecondCallSuffix = `endpoint/api/sharedboxes/${SHAREDBOX_JSON.guid}/recipients`;
+
+      client.addRecipient(sharedbox, recipient).then((res) => {
+        expect(stub.getCall(1).args[0]).to.deep.equal(expectedSecondCallSuffix);
+        expect(res).to.be.an('object');
+        expect(sharedbox.recipients.length).to.equal(1);
+      }).catch(() => {
+        assert(false);
+      });
     });
 
     it('Should throw and error if the first fetch called respondes with a non-ok response', () => {
