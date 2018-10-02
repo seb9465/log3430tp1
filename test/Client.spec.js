@@ -302,7 +302,7 @@ export default describe('Client', () => {
       // Act & Assert
       assert.throws(() => { client.addRecipient(sharedbox, recipient); }, SharedBoxException, 'SharedBox GUID cannot be null or undefined');
     });
-    
+
     it('Should throw an error if the recipient\'s email is undefined', () => {
       const sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_JSON);
       const recipient = new SharedBox.Helpers.Recipient();
@@ -460,17 +460,54 @@ export default describe('Client', () => {
         // Assert
         expect(err).to.be.an('error');
       });
-    });    
+    });
   });
 
   describe('closeSharedbox function', () => {
     it('Should throw an error if the sharebox\'s guid is undefined', () => {
+      // Arrange
+      const sharedbox = new SharedBox.Helpers.Sharedbox();
 
+      // Act & Assert
+      assert.throws(() => { client.closeSharedbox(sharedbox); }, SharedBoxException, 'SharedBox GUID cannot be null or undefined');
     });
 
     it('Should return the request result', () => {
+      // Arrange
+      const sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_JSON);
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: true,
+        text: () => { return 'endpoint/'; },
+        status: 200,
+        statusText: 'Everything\'s fine',
+      });
+      stub.onCall(1).resolves({
+        status: 200,
+        ok: true,
+        json: () => {
+          return new Promise((resolve) => {
+            resolve({
+              'result': true,
+              'message': 'Sharedbox successfully closed.'
+            });
+          });
+        },
+        text: () => { return new Promise((resolve) => { resolve({ status: 200, statusText: 'Everything\'s fine' }); }); }
+      });
+      const expectedSecondCallFirstArg = `endpoint/api/sharedboxes/${sharedbox.guid}/close`;
+      const expectedResult = {
+        'result': true,
+        'message': 'Sharedbox successfully closed.'
+      };
 
-    }); 
+      // Act
+      client.closeSharedbox(sharedbox).then((res) => {
+        // Assert
+        expect(res).to.deep.equal(expectedResult);
+        expect(stub.getCall(1).args[0]).to.deep.equal(expectedSecondCallFirstArg);
+      });
+    });
 
     it('Should throw and error if the first fetch called respondes with a non-ok response', () => {
 
