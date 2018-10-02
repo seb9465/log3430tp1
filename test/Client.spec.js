@@ -37,7 +37,6 @@ const SHAREDBOX_JSON = {
   'expiration': '2018-05-31T14:45:35.038Z',
   'closedAt': null
 };
-
 const RECIPIENT_JSON = {
   'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
   'firstName': 'John',
@@ -83,6 +82,7 @@ export default describe('Client', () => {
     it('should be defined', () => {
       assert(client);
     });
+
     it('Should have initialized the properties with the right value', () => {
       expect(client['apiToken']).to.deep.equal('api');
       expect(client['userId']).to.deep.equal(1);
@@ -496,6 +496,13 @@ export default describe('Client', () => {
         text: () => { return new Promise((resolve) => { resolve({ status: 200, statusText: 'Everything\'s fine' }); }); }
       });
       const expectedSecondCallFirstArg = `endpoint/api/sharedboxes/${sharedbox.guid}/close`;
+      const expectedSecondCallSecondArg = {
+        headers: {
+          'Authorization-Token': 'api',
+          'Content-Type': 'application/json'
+        },
+        method: 'patch'
+      };
       const expectedResult = {
         'result': true,
         'message': 'Sharedbox successfully closed.'
@@ -506,15 +513,73 @@ export default describe('Client', () => {
         // Assert
         expect(res).to.deep.equal(expectedResult);
         expect(stub.getCall(1).args[0]).to.deep.equal(expectedSecondCallFirstArg);
+        expect(stub.getCall(1).args[1]).to.deep.equal(expectedSecondCallSecondArg);
       });
     });
 
     it('Should throw and error if the first fetch called respondes with a non-ok response', () => {
+      // Arrange
+      const sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_JSON);
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: false,
+        status: 501,
+        statusText: 'Internal Server Error',
+      });
+      stub.onCall(1).resolves({
+        status: 200,
+        ok: true,
+        json: () => {
+          return new Promise((resolve) => {
+            resolve({
+              'result': true,
+              'message': 'Sharedbox successfully closed.'
+            });
+          });
+        },
+        text: () => { return new Promise((resolve) => { resolve({ status: 200, statusText: 'Everything\'s fine' }); }); }
+      });
 
+      // Act
+      client.closeSharedbox(sharedbox).then(() => {
+        assert(false);
+      }).catch((err) => {
+        // Assert
+        expect(err).to.be.an('error');
+      });
     });
 
     it('Should throw and error if the second fetch called respondes with a non-ok response', () => {
+      // Arrange
+      const sharedbox = new SharedBox.Helpers.Sharedbox(SHAREDBOX_JSON);
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: true,
+        text: () => { return 'endpoint/'; },
+        status: 200,
+        statusText: 'Everything\'s fine',
+      });
+      stub.onCall(1).resolves({
+        status: 501,
+        ok: false,
+        text: () => {
+          return new Promise((resolve) => {
+            resolve({
+              status: 501,
+              statusText: 'Internal Server Error'
+            });
+          });
+        },
+        statusText: 'Internal Server Error',
+      });
 
+      // Act
+      client.closeSharedbox(sharedbox).then(() => {
+        assert(false);
+      }).catch((err) => {
+        // Assert
+        expect(err).to.be.an('error');
+      });
     });
   });
 
