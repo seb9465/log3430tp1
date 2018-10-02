@@ -263,6 +263,46 @@ export default describe('Client', () => {
     });
   });
 
+  describe('addRecipient function', () => {
+    it('Should throw an error if the sharedbox\'s guid is undefined', () => {
+
+    });
+    
+    it('Should throw an error if the sharedbox\'s email is undefined', () => {
+
+    });
+
+    it('Should return the updated sharedbox', () => {
+
+    });
+
+    it('Should throw and error if the first fetch called respondes with a non-ok response', () => {
+
+    });
+
+    it('Should throw and error if the second fetch called respondes with a non-ok response', () => {
+
+    });    
+  });
+
+  describe('closeSharedbox function', () => {
+    it('Should throw an error if the sharebox\'s guid is undefined', () => {
+
+    });
+
+    it('Should return the request result', () => {
+
+    });
+
+    it('Should throw and error if the first fetch called respondes with a non-ok response', () => {
+
+    });
+
+    it('Should throw and error if the second fetch called respondes with a non-ok response', () => {
+
+    });
+  });
+
   afterEach(() => {
     sinon.restore();
   });
