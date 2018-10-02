@@ -18,7 +18,7 @@ export default describe('JsonClient', () => {
     it('Should be defined', () => {
       assert(jsonClient);
     });
-    
+
     it('Should have initialized the properties with the good value', () => {
       expect(jsonClient['apiToken']).to.deep.equal('api');
       expect(jsonClient['userId']).to.deep.equal(1);
@@ -114,7 +114,7 @@ export default describe('JsonClient', () => {
       });
 
       // Act & Arrange
-      expect(function() { jsonClient.initializeSharedBox(''); }, SharedBoxException);
+      expect(function () { jsonClient.initializeSharedBox(''); }, SharedBoxException);
     });
   });
 

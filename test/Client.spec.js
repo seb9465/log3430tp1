@@ -32,7 +32,7 @@ export default describe('Client', () => {
   });
 
   describe('initializeSharedBox function', () => {
-    it('Should call the fetch method twice', () => {
+    it('Should call the fetch method twice and return the updated SharedBox', () => {
       let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
       stub.onCall(0).resolves({
         ok: true,
@@ -56,6 +56,24 @@ export default describe('Client', () => {
         assert(false);
       });
     });
+
+    it('Shoudl throw and error if the first fetch call responded with a non-ok response', () => {
+      // Arrange
+      const sharedbox = new SharedBox.Helpers.Sharedbox({ userEmail: 'jonh.doe@me.com' });
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: false,
+        status: 501,
+        statusText: 'Internal server error',
+      });
+
+      // Act
+      client.initializeSharedBox(sharedbox).then(() => {
+        assert(false);
+      }).catch((err) => {
+        expect(err).to.be.an('error');
+      });
+    });
   });
 
   describe('submitSharedbox function', () => {
@@ -66,5 +84,7 @@ export default describe('Client', () => {
     });
   });
 
-
+  afterEach(() => {
+    sinon.restore();
+  });
 });
