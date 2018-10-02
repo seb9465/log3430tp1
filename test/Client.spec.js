@@ -57,7 +57,7 @@ export default describe('Client', () => {
       });
     });
 
-    it('Shoudl throw and error if the first fetch call responded with a non-ok response', () => {
+    it('Should throw an error if the first fetch call respondes with a non-ok response', () => {
       // Arrange
       const sharedbox = new SharedBox.Helpers.Sharedbox({ userEmail: 'jonh.doe@me.com' });
       let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
@@ -66,13 +66,41 @@ export default describe('Client', () => {
         status: 501,
         statusText: 'Internal server error',
       });
-
-      // Act
-      client.initializeSharedBox(sharedbox).then(() => {
-        assert(false);
-      }).catch((err) => {
-        expect(err).to.be.an('error');
+      stub.onCall(1).resolves({
+        status: 200,
+        ok: true,
+        json: () => { return new Promise((resolve) => { resolve({ guid: 'dc6f21e0f02c41123b795e4', uploadUrl: 'upload_url' }); }); },
+        text: () => { return new Promise((resolve) => { resolve({ status: 501, statusText: 'An error as occuried' }); }); }
       });
+
+      // Act & Arrange
+      expect(function() {client.initializeSharedBox(sharedbox); }, SharedBoxException);
+    });
+
+    it('Should throw an error if the second fetch call repondes with a non-ok response', () => {
+      // Arrange
+      const sharedbox = new SharedBox.Helpers.Sharedbox({ userEmail: 'jonh.doe@me.com' });
+      let stub = sinon.stub(Utils, 'fetch').withArgs(sinon.match.string, sinon.match.object);
+      stub.onCall(0).resolves({
+        ok: true,
+        text: () => { return 'endpoint/'; },
+      });
+      stub.onCall(1).resolves({
+        status: 501,
+        ok: false,
+        text: () => {
+          return new Promise((resolve) => {
+            resolve({
+              status: 501,
+              statusText: 'Internal Server Error'
+            });
+          });
+        },
+        statusText: 'Internal Server Error',
+      });
+
+      // Act & Arrange
+      expect(function() {client.initializeSharedBox(sharedbox); }, SharedBoxException);
     });
   });
 
