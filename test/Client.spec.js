@@ -38,6 +38,36 @@ const SHAREDBOX_JSON = {
   'closedAt': null
 };
 
+const RECIPIENT_JSON = {
+  'id': '59adbccb-87cc-4224-bfd7-314dae796e48',
+  'firstName': 'John',
+  'lastName': 'Doe',
+  'email': 'john.doe@email.com',
+  'options': {
+    'locked': false,
+    'bouncedEmail': false,
+    'verified': false,
+    'contactMethods': [
+      {
+        'id': 1,
+        'destination': '+55555555555',
+        'destinationType': 'office_phone',
+        'verified': false,
+        'createdAt': '2018-09-01T16:26:07-04:00',
+        'updatedAt': '2018-09-01T16:26:07-04:00'
+      },
+      {
+        'id': 2,
+        'destination': '+1111111111',
+        'destinationType': 'cell_phone',
+        'verified': true,
+        'createdAt': '2018-09-01T16:26:07-04:00',
+        'updatedAt': '2018-09-01T16:26:07-04:00'
+      }
+    ]
+  }
+};
+
 export default describe('Client', () => {
   let client;
 
@@ -104,7 +134,7 @@ export default describe('Client', () => {
       });
 
       // Act & Arrange
-      expect(function () { client.initializeSharedBox(sharedbox); }, SharedBoxException);
+      expect(() => { client.initializeSharedBox(sharedbox); }, SharedBoxException);
     });
 
     it('Should throw an error if the second fetch called respondes with a non-ok response', () => {
@@ -130,7 +160,7 @@ export default describe('Client', () => {
       });
 
       // Act & Arrange
-      expect(function () { client.initializeSharedBox(sharedbox); }, SharedBoxException);
+      expect(() => { client.initializeSharedBox(sharedbox); }, SharedBoxException);
     });
   });
 
@@ -140,7 +170,7 @@ export default describe('Client', () => {
       let sharedbox = new SharedBox.Helpers.Sharedbox();
 
       // Act & Arrange
-      assert.throws(function () { client.submitSharedBox(sharedbox); }, SharedBoxException);
+      assert.throws(() => { client.submitSharedBox(sharedbox); }, SharedBoxException);
     });
 
     it('Should call the fetch method twice and return the updated SharedBox', () => {
@@ -231,7 +261,7 @@ export default describe('Client', () => {
       });
 
       // Act & Assert
-      expect(function () { client.submitSharedBox(sharedbox); }, SharedBoxException);
+      expect(() => { client.submitSharedBox(sharedbox); }, SharedBoxException);
     });
 
     it('Should throw an error if the second fetch called respondes with a non-ok response', () => {
@@ -259,17 +289,22 @@ export default describe('Client', () => {
       });
 
       // Act & Arrange
-      expect(function () { client.sbmitSharedBox(sharedbox); }, SharedBoxException);
+      expect(() => { client.sbmitSharedBox(sharedbox); }, SharedBoxException);
     });
   });
 
   describe('addRecipient function', () => {
     it('Should throw an error if the sharedbox\'s guid is undefined', () => {
+      // Arrange
+      const sharedbox = new SharedBox.Helpers.Sharedbox();
+      const recipient = new SharedBox.Helpers.Recipient(RECIPIENT_JSON);
 
+      // Act & Assert
+      expect(() => { client.addRecipient(sharedbox, recipient); }, SharedBoxException);
     });
     
     it('Should throw an error if the sharedbox\'s email is undefined', () => {
-
+      
     });
 
     it('Should return the updated sharedbox', () => {
@@ -292,7 +327,7 @@ export default describe('Client', () => {
 
     it('Should return the request result', () => {
 
-    });
+    }); 
 
     it('Should throw and error if the first fetch called respondes with a non-ok response', () => {
 
